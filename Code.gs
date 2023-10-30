@@ -5,15 +5,13 @@ const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 
 var wsData = SpreadsheetApp.openById(ssID).getSheetByName("Sheet1")
 
-
 function main(){
-  
-
+  form = createForm("A test form")
 
 }
 
 
-function main(){
+function main_temp(){
   var labels = wsData.getRange(1, 1, 1, wsData.getLastColumn()).getValues()[0];
   //Logger.log(labels)
   
