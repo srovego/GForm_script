@@ -2,13 +2,22 @@
 //2. Добавление элемента формы типа Список
 const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
+const ss_sheetName = "Sheet1"
 
-var wsData = SpreadsheetApp.openById(ssID).getSheetByName("Sheet1")
+function getWsHeaderData(gsheetId, sheetName){ 
+  //Функция возвращает массив значений, соответсвующих заголовку 
+  var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
+  var headerData = wsData.getRange(1, 1, 1, wsData.getLastColumn()).getValues()[0];
+  return headerData
+}
+
 
 function main(){
-  form = createForm("A test form")
-
+  //form = createForm("A test form")
+  headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
+  Logger.log(headerData)
 }
+
 
 
 function main_temp(){
