@@ -11,13 +11,40 @@ function getWsHeaderData(gsheetId, sheetName){
   return headerData
 }
 
+function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startCellColNum = 1, rowsToRead = false, colsToRead = false){
+  //Чтение требуемого диапазона данных с листа sheetName документа gsheetId, начиная с ячейки с координатами startCellRowNum, startCellCollNum
+  // Если значения rowsToRead и colsToRead = False - возвращается массив, соответствующий всем доступным данным на листе. 
+  var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
+  wsDataColsNum = wsData.getLastColumn()
+  wsDataRowsNum = wsData.getLastRow()
+
+  if (rowsToRead !=false){
+    wsRowsToRead = rowsToRead;
+  }
+  else{
+    wsRowsToRead = wsDataRowsNum;
+  }
+
+  if (colsToRead !=false){
+    wsColsToRead = colsToRead;
+  }
+  else{
+    wsColsToRead = wsDataColsNum;
+  }
+
+  var values = wsData.getRange(startCellRowNum, startCellColNum, wsRowsToRead, wsColsToRead).getValues();
+  Logger.log(values)
+  return values
+}
+
 
 function main(){
   //form = createForm("A test form")
-  headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
-  Logger.log(headerData)
-}
+  //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
+  getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
 
+  //Logger.log(headerData)
+}
 
 
 function main_temp(){
