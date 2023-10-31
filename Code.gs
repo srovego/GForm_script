@@ -24,7 +24,7 @@ function getWsHeaderData(gsheetId, sheetName){
   return headerData
 }
 
-function fillAnswerOptions(gsheetId, sheetName, formId){
+function fillAnswerOptions(gsheetId, sheetName, formId, shuffle = false){
   var allData = getRangeDataFromGSheet(gsheetId, sheetName)
   //Logger.log(allData)
   var total_columns = allData[0].length
@@ -42,6 +42,9 @@ function fillAnswerOptions(gsheetId, sheetName, formId){
                                        startCellColNum = c,
                                        rowsToRead = false,
                                        colsToRead = 1).map(function(o){return o[0]}).filter( function(o){return o !==""} )
+      if (shuffle == true){
+        answers = shuffleArray(answers)
+      }
       updateDropdownUsingTitle(form = form, title = question, values = answers)
       Logger.log(answers)
       }
@@ -109,7 +112,7 @@ function main(){
   } );
   
   //Заполняем опции ответов
-  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId)
+  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
   Logger.log(questionsList)
 }
 
