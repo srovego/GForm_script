@@ -1,5 +1,6 @@
 //1. Создание формы и размещение в требуемой папке
 //2. Добавление элемента формы типа Список
+// Тестовое изменение текстового поля для проверки синхронизации через github
 const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
