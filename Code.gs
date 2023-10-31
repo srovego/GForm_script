@@ -56,9 +56,19 @@ function main(){
   //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
   
   //Фукнции, составляющие уже основную программу
+  //Создаем пустую форму
   newFormId = createEmptyForm('An empty form', target_folder_id)
+  
+  //Считываем список вопросов
   questionsList = getWsHeaderData(ssID, ss_sheetName)
-  addDropdownListToForm(formId = newFormId, listTitle = questionsList[0])
+  
+  //Создаем пустые выпадающие списки с соответствующими вопросами
+  questionsList.forEach(function(question){
+    addDropdownListToForm(formId = newFormId, listTitle = question)
+  } );
+
+
+  
   Logger.log(questionsList)
 }
 
