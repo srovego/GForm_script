@@ -8,7 +8,7 @@ const ss_sheetName = "Sheet1"
 function getWsHeaderData(gsheetId, sheetName){ 
   //Функция возвращает массив значений, соответсвующих заголовку 
   var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
-  var headerData = wsData.getRange(1, 1, 1, wsData.getLastColumn()).getValues()[0];
+  var headerData = wsData.getRange(1, 1, 1, wsData.getLastColumn()).getValues()[0].filter(function(o){return o !==""});;
   return headerData
 }
 
@@ -45,7 +45,7 @@ function addDropdownListToForm(formId, listTitle){
   form = FormApp.openById(formId)
   form.addListItem()
       .setTitle(listTitle)
-
+      .setRequired(true)
 }
 
 
