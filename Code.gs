@@ -38,13 +38,12 @@ function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startC
   return values
 }
 
-
 function main(){
   //form = createForm("A test form")
   //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
-  getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
-
-  //Logger.log(headerData)
+  //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
+  newFormId = createEmptyForm('An empty form', target_folder_id)
+  Logger.log(newFormId)
 }
 
 
@@ -64,6 +63,21 @@ function main_temp(){
   });
 
 
+}
+
+
+function createEmptyForm(title, folderId = false){
+//функция создает пустую форму и возвращает ее ID. При  необходимости - форма перемещается в папку folderId
+  var item = title
+  var form = FormApp.create(item)
+    .setTitle(item);
+  form.setDestination
+  newFormId = form.getId()
+
+  if (folderId != false){
+    moveFileToFolder(newFormId, folderId)
+  }
+  return newFormId
 }
 
 function createForm(title) {
