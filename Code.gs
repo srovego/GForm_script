@@ -5,6 +5,18 @@ const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 
+function shuffleArray(array) {
+  var i, j, temp;
+  for (i = array.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1));
+    temp = array[i];
+    array[i] = array[j];
+    array[j] = temp;
+  }
+  return array;
+}
+
+
 function getWsHeaderData(gsheetId, sheetName){ 
   //Функция возвращает массив значений, соответсвующих заголовку 
   var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
