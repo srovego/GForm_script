@@ -38,12 +38,28 @@ function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startC
   return values
 }
 
+function addDropdownListToForm(formId, listTitle){
+  //Функция добавляет новый выпадающий список (пустой) в указанную форму
+  drop_item_name_1 = "Drop item 1"
+  //form = DriveApp.getFileById(formId)
+  form = FormApp.openById(formId)
+  form.addListItem()
+      .setTitle(listTitle)
+
+}
+
+
 function main(){
+  //Тестовые запуски функций
   //form = createForm("A test form")
   //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
   //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
+  
+  //Фукнции, составляющие уже основную программу
   newFormId = createEmptyForm('An empty form', target_folder_id)
-  Logger.log(newFormId)
+  questionsList = getWsHeaderData(ssID, ss_sheetName)
+  addDropdownListToForm(formId = newFormId, listTitle = questionsList[0])
+  Logger.log(questionsList)
 }
 
 
