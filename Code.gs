@@ -12,13 +12,17 @@ function getWsHeaderData(gsheetId, sheetName){
   return headerData
 }
 
-function test(){
-  var allData = getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
+function fillAnswerOptions(gsheetId, sheetName, formId){
+  var allData = getRangeDataFromGSheet(gsheetId, sheetName)
   //Logger.log(allData)
   var total_columns = allData[0].length
+  
+  form = FormApp.openById(formId)
+  
   for (c=1; c<=total_columns; c++){
     Logger.log("C=" + String(c))
-    if (allData[0][c-1] != ""){
+    question = allData[0][c-1]
+    if (question != ""){
       //Если в заголовке, т.е. в тексте вопроса, что то указано - считываем все строки в данном столбце и заполняем форму
       answers = getRangeDataFromGSheet(gsheetId = ssID,
                                        sheetName = ss_sheetName,
@@ -26,7 +30,7 @@ function test(){
                                        startCellColNum = c,
                                        rowsToRead = false,
                                        colsToRead = 1).map(function(o){return o[0]}).filter( function(o){return o !==""} )
-      
+      updateDropdownUsingTitle(form = form, title = question, values = answers)
       Logger.log(answers)
       }
       else{
@@ -91,7 +95,9 @@ function main(){
   questionsList.forEach(function(question){
     addDropdownListToForm(formId = newFormId, listTitle = question)
   } );
- 
+  
+  //Заполняем опции ответов
+  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId)
   Logger.log(questionsList)
 }
 
