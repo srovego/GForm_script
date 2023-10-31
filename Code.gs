@@ -12,6 +12,31 @@ function getWsHeaderData(gsheetId, sheetName){
   return headerData
 }
 
+function test(){
+  var allData = getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
+  //Logger.log(allData)
+  var total_columns = allData[0].length
+  for (c=1; c<=total_columns; c++){
+    Logger.log("C=" + String(c))
+    if (allData[0][c-1] != ""){
+      //Если в заголовке, т.е. в тексте вопроса, что то указано - считываем все строки в данном столбце и заполняем форму
+      answers = getRangeDataFromGSheet(gsheetId = ssID,
+                                       sheetName = ss_sheetName,
+                                       startCellRowNum = 2,
+                                       startCellColNum = c,
+                                       rowsToRead = false,
+                                       colsToRead = 1).map(function(o){return o[0]}).filter( function(o){return o !==""} )
+      
+      Logger.log(answers)
+      }
+      else{
+        Logger.log("No actions will be (empty question)")
+
+      }
+    }
+}
+
+
 function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startCellColNum = 1, rowsToRead = false, colsToRead = false){
   //Чтение требуемого диапазона данных с листа sheetName документа gsheetId, начиная с ячейки с координатами startCellRowNum, startCellCollNum
   // Если значения rowsToRead и colsToRead = False - возвращается массив, соответствующий всем доступным данным на листе. 
@@ -34,7 +59,7 @@ function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startC
   }
 
   var values = wsData.getRange(startCellRowNum, startCellColNum, wsRowsToRead, wsColsToRead).getValues();
-  Logger.log(values)
+  //Logger.log(values)
   return values
 }
 
@@ -66,11 +91,11 @@ function main(){
   questionsList.forEach(function(question){
     addDropdownListToForm(formId = newFormId, listTitle = question)
   } );
-
-
-  
+ 
   Logger.log(questionsList)
 }
+
+
 
 
 function main_temp(){
@@ -87,8 +112,6 @@ function main_temp(){
       .filter(function(o){return o !==""});
     updateDropdownUsingTitle(form, label, options)
   });
-
-
 }
 
 
@@ -106,7 +129,7 @@ function createEmptyForm(title, folderId = false){
   return newFormId
 }
 
-function createForm(title) {
+function temp_createForm(title) {
   var item = title
   var form = FormApp.create(item)
     .setTitle(item);
@@ -142,7 +165,7 @@ function updateDropdownUsingTitle(form, title, values){
   var titles = items.map(function(item){
     return item.getTitle();
   })
-  var dropListPosition = titles.indexOf(drop_item_name)
+  var dropListPosition = titles.indexOf(title)
   var dropListId = items[dropListPosition].asListItem().getId()
   updateDropdown(form, dropListId, values)
 }
