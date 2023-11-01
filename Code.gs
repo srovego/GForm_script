@@ -4,6 +4,8 @@
 const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
+const numberOfVariants = 5
+
 
 function shuffleArray(array) {
   var i, j, temp;
@@ -205,43 +207,40 @@ function updateDropdownUsingTitle(form, title, values, correctAnswer = false){
 
 
 function updateDropdown(form, id, values, correctAnswer = false){
-  var item = form.getItemById(id)
+  var item = form.getItemById(id).asListItem()
   valuesNumber = values.length
-  Logger.log("Число опций ответов: " + String(valuesNumber))
-  for (i = 0; i < valuesNumber; i++){
-    correctMark = Boolean(values[i] == correctAnswer)
-    Logger.log("Добавление опции. Правильность ответа: " + String(correctMark))
-    //item.asListItem().createChoice(values[i], correctMark)
-    item.asListItem().setChoices(item.createChoice(values[i], correctMark) )
 
+  answersCorrectStatus = getCorrectStatusArray(values, numberOfVariants,correctAnswer)
+
+  item.setChoices(
+    [item.createChoice(values[0], answersCorrectStatus[0]),
+    item.createChoice(values[1], answersCorrectStatus[1]),
+    item.createChoice(values[2], answersCorrectStatus[2]),
+    item.createChoice(values[3], answersCorrectStatus[3]),
+    item.createChoice(values[4], answersCorrectStatus[4]),]);
+  
+
+}
+
+function getCorrectStatusArray(values, numberOfVariants, correctAnswer = false){
+  var result = []
+  if (correctAnswer == false){
+    for (i = 1; i < numberOfVariants; i++){
+      result.push(false)
+    }
   }
-  //item.asListItem().setChoiceValues(values)
-
+  else{
+    for (i = 0; i < values.length; i++){
+      if (values[i] == correctAnswer){
+        result.push(true)
+      }
+      else{
+        result.push(false)
+      }
+    }
+  }
+  return result
 }
-
-
-temp_form_id = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
-
-function testUpdatingList(){
-  form = FormApp.openById(temp_form_id)
-  var items = form.getItems()
-  q1Id = items[0].getId()
-  q1Item = form.getItemById(q1Id).asListItem()
-  q1Options = q1Item.getChoices()
-  Logger.log(q1Options[0].getValue())
-  arr = ["One","Two","Three"]
-  arr_correct = [false, false, true]
-  q1Item.setChoices([
-    q1Item.createChoice(arr[0], arr_correct[0]),
-    q1Item.createChoice(arr[1], arr_correct[1]),
-    q1Item.createChoice(arr[2], arr_correct[2])
-  ]);
-
-
-  q1Item.createChoice("A_sw", true)
-}
-
-
 
 function moveFileToFolder(fileId, destinationFolderId){
   
