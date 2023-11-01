@@ -42,11 +42,13 @@ function fillAnswerOptions(gsheetId, sheetName, formId, shuffle = false){
                                        startCellColNum = c,
                                        rowsToRead = false,
                                        colsToRead = 1).map(function(o){return o[0]}).filter( function(o){return o !==""} )
+      correctAnswer = answers[0]
+      Logger.log("Корректный ответ: " + String(correctAnswer))
       if (shuffle == true){
         answers = shuffleArray(answers)
       }
-      updateDropdownUsingTitle(form = form, title = question, values = answers)
-      Logger.log(answers)
+      updateDropdownUsingTitle(form = form, title = question, values = answers, correctAnswer = correctAnswer)
+      Logger.log("Перемешанные ответы: " + String(answers))
       }
       else{
         Logger.log("No actions will be (empty question)")
@@ -190,20 +192,30 @@ function temp_createForm(title) {
   return form
 }
 
-function updateDropdownUsingTitle(form, title, values){
+function updateDropdownUsingTitle(form, title, values, correctAnswer = false){
   var items = form.getItems()
   var titles = items.map(function(item){
     return item.getTitle();
   })
   var dropListPosition = titles.indexOf(title)
   var dropListId = items[dropListPosition].asListItem().getId()
-  updateDropdown(form, dropListId, values)
+  updateDropdown(form, dropListId, values, correctAnswer)
+  Logger.log("Обновление списка по имени. Заполняемые значения: " + String(values) + ". Корректное значение: " + String(correctAnswer))
 }
 
 
-function updateDropdown(form, id, values){
+function updateDropdown(form, id, values, correctAnswer = false){
   var item = form.getItemById(id)
-  item.asListItem().setChoiceValues(values)
+  valuesNumber = values.length
+  Logger.log("Число опций ответов: " + String(valuesNumber))
+  for (i = 0; i < valuesNumber; i++){
+    correctMark = Boolean(values[i] == correctAnswer)
+    Logger.log("Добавление опции. Правильность ответа: " + String(correctMark))
+    //item.asListItem().createChoice(values[i], correctMark)
+    item.asListItem().setChoices(item.createChoice(values[i], correctMark) )
+
+  }
+  //item.asListItem().setChoiceValues(values)
 
 }
 
