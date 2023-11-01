@@ -219,6 +219,30 @@ function updateDropdown(form, id, values, correctAnswer = false){
 
 }
 
+
+temp_form_id = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
+
+function testUpdatingList(){
+  form = FormApp.openById(temp_form_id)
+  var items = form.getItems()
+  q1Id = items[0].getId()
+  q1Item = form.getItemById(q1Id).asListItem()
+  q1Options = q1Item.getChoices()
+  Logger.log(q1Options[0].getValue())
+  arr = ["One","Two","Three"]
+  arr_correct = [false, false, true]
+  q1Item.setChoices([
+    q1Item.createChoice(arr[0], arr_correct[0]),
+    q1Item.createChoice(arr[1], arr_correct[1]),
+    q1Item.createChoice(arr[2], arr_correct[2])
+  ]);
+
+
+  q1Item.createChoice("A_sw", true)
+}
+
+
+
 function moveFileToFolder(fileId, destinationFolderId){
   
   var file = DriveApp.getFileById(fileId);
