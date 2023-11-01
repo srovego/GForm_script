@@ -82,15 +82,18 @@ function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startC
   return values
 }
 
-function addDropdownListToForm(formId, listTitle){
+function addDropdownListToForm(formId, listTitle, points = false){
   //Функция добавляет новый выпадающий список (пустой) в указанную форму
   drop_item_name_1 = "Drop item 1"
   //form = DriveApp.getFileById(formId)
   form = FormApp.openById(formId)
-  form.addListItem()
+  newItem = form.addListItem()
       .setTitle(listTitle)
       .setRequired(true)
-      .setPoints(5)
+
+  if (points > 0){
+    newItem.setPoints(points)
+  }
 }
 
 
@@ -109,7 +112,7 @@ function main(){
   
   //Создаем пустые выпадающие списки с соответствующими вопросами
   questionsList.forEach(function(question){
-    addDropdownListToForm(formId = newFormId, listTitle = question)
+    addDropdownListToForm(formId = newFormId, listTitle = question, points = 5)
   } );
   
   //Заполняем опции ответов
