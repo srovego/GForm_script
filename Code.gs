@@ -90,6 +90,7 @@ function addDropdownListToForm(formId, listTitle){
   form.addListItem()
       .setTitle(listTitle)
       .setRequired(true)
+      .setPoints(5)
 }
 
 
@@ -101,7 +102,7 @@ function main(){
   
   //Фукнции, составляющие уже основную программу
   //Создаем пустую форму
-  newFormId = createEmptyForm('An empty form', target_folder_id)
+  newFormId = createEmptyForm('An empty form', target_folder_id, isQuiz = true)
   
   //Считываем список вопросов
   questionsList = getWsHeaderData(ssID, ss_sheetName)
@@ -136,17 +137,22 @@ function main_temp(){
 }
 
 
-function createEmptyForm(title, folderId = false){
+function createEmptyForm(title, folderId = false, isQuiz = false){
 //функция создает пустую форму и возвращает ее ID. При  необходимости - форма перемещается в папку folderId
   var item = title
   var form = FormApp.create(item)
     .setTitle(item);
   form.setDestination
   newFormId = form.getId()
+  
+  if (isQuiz == true){
+    form.setIsQuiz(true)
+  }
 
   if (folderId != false){
     moveFileToFolder(newFormId, folderId)
   }
+ 
   return newFormId
 }
 
