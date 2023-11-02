@@ -212,6 +212,14 @@ function updateDropdown(form, id, values, correctAnswer = false){
 
   answersCorrectStatus = getCorrectStatusArray(values, numberOfVariants,correctAnswer)
 
+  //Проверка на ситуацию, если в массивах менее 5 элементов (добавляем пустые)
+  if (valuesNumber<5){
+    while(values.length < 5){
+      values.push("Empty answer " + String(values.length + 1))
+      answersCorrectStatus.push(false)
+    }
+  }
+
   item.setChoices(
     [item.createChoice(values[0], answersCorrectStatus[0]),
     item.createChoice(values[1], answersCorrectStatus[1]),
