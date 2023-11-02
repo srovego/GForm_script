@@ -6,6 +6,29 @@ const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const numberOfVariants = 5
 
+function testPages(){
+  formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
+  form = FormApp.openById(formId)
+
+  const pageTwo = form.addPageBreakItem();
+  addDropdownListToForm(formId = formId, listTitle = "Test list p2", points = 5)
+
+  const pageThree = form.addPageBreakItem();
+  addDropdownListToForm(formId = formId, listTitle = "Test list p3", points = 5)
+
+  pageTwo.setTitle('Page two');
+  Logger.log("Идентификатор страницы 2: " + String(pageTwo.getId()) )
+  Logger.log("Идентификатор страницы 3: " + String(pageThree.getId()) )
+
+  pageThree.setTitle('Page three');
+  // Upon completion of the first page, sets the form to navigate to the third page.
+  pageTwo.setGoToPage(pageThree);
+
+  // Upon completion of the second page, sets the form to navigate back to the first page.
+  pageThree.setGoToPage(FormApp.PageNavigationType.RESTART);
+
+  
+}
 
 function shuffleArray(array) {
   var i, j, temp;
@@ -123,8 +146,6 @@ function main(){
   fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
   Logger.log(questionsList)
 }
-
-
 
 
 function main_temp(){
