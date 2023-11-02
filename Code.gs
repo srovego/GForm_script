@@ -38,6 +38,49 @@ function testPages(){
   theLastItemIndex = lastItem.getIndex()
   form.moveItem(theLastItemIndex, allItems[1].getIndex())
   
+
+}
+
+function testPages2(){
+  //https://www.youtube.com/watch?v=Adm7Ah-yyx8&t=312s
+
+  formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
+  form = FormApp.openById(formId)
+
+  var sheets = ["Механика", "Электрика"]
+
+  //Первый выбор - в какой раздел топать
+  var classSelect = form.addMultipleChoiceItem();
+  classSelect.setTitle("Выбери раздел")
+
+  var classChoises = []
+  for(var i = 0; i < sheets.length; i++){
+    //Для каждого из элементов списка sheets
+    var className = sheets[i];
+
+    var classSection = form.addPageBreakItem()
+        .setTitle(className)
+        .setGoToPage(FormApp.PageNavigationType.SUBMIT);
+
+    var students = ["Student 1", "Student 2", "Student 3"];
+
+    var studentSelect = form.addCheckboxItem()
+        .setTitle(className + ' absent')
+        .setHelpText("Укажи отсутствующих студентов");
+    
+    var studentChoices = [];
+    for(var j = 0; j < students.length; j++){
+      studentChoices.push(studentSelect.createChoice(students[j]));
+    }
+
+    studentSelect.setChoices(studentChoices)
+
+    classChoises.push(classSelect.createChoice(className, classSection))
+
+
+  }
+  classSelect.setChoices(classChoises)
+
 }
 
 function logTitleId(value){
