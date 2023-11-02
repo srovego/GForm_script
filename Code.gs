@@ -21,16 +21,30 @@ function testPages(){
   //Можно ли использовать идентификатор раздела..... - нет, возникает ошибка если использовать идентификатор раздела вместо идентификатора формы?
   sectionId = pageTwo.getId()
   sectionIndex = pageTwo.getIndex()
-  Logger.log("Индекс раздела 2: " + String(sectionIndex))
+  //Logger.log("Индекс раздела 2: " + String(sectionIndex))
 
   pageTwo.setTitle('Page two');
-  Logger.log("Идентификатор страницы 2: " + String(pageTwo.getId()) )
-  Logger.log("Идентификатор страницы 3: " + String(pageThree.getId()) )
+  Logger.log("Идентификатор добавленной страницы 2: " + String(pageTwo.getId()) )
+  Logger.log("Идентификатор добавленной страницы 3: " + String(pageThree.getId()) )
 
   pageThree.setTitle('Page three');
 
+  allItems = form.getItems()
+  allItems.forEach(logTitleId)
   //pageTwo.setGoToPage(pageThree);
+  lastItem = allItems[allItems.length-1]
+
+  theLastItemId = lastItem.getId()
+  theLastItemIndex = lastItem.getIndex()
+  form.moveItem(theLastItemIndex, allItems[1].getIndex())
   
+}
+
+function logTitleId(value){
+  Logger.log(value.getTitle())
+  Logger.log(value.getId())
+  Logger.log(value.getIndex())
+  Logger.log(value.getType())
 }
 
 function shuffleArray(array) {
