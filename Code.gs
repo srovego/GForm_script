@@ -11,22 +11,25 @@ function testPages(){
   form = FormApp.openById(formId)
 
   const pageTwo = form.addPageBreakItem();
+
   addDropdownListToForm(formId = formId, listTitle = "Test list p2", points = 5)
+  
 
   const pageThree = form.addPageBreakItem();
   addDropdownListToForm(formId = formId, listTitle = "Test list p3", points = 5)
+
+  //Можно ли использовать идентификатор раздела..... - нет, возникает ошибка если использовать идентификатор раздела вместо идентификатора формы?
+  sectionId = pageTwo.getId()
+  sectionIndex = pageTwo.getIndex()
+  Logger.log("Индекс раздела 2: " + String(sectionIndex))
 
   pageTwo.setTitle('Page two');
   Logger.log("Идентификатор страницы 2: " + String(pageTwo.getId()) )
   Logger.log("Идентификатор страницы 3: " + String(pageThree.getId()) )
 
   pageThree.setTitle('Page three');
-  // Upon completion of the first page, sets the form to navigate to the third page.
-  pageTwo.setGoToPage(pageThree);
 
-  // Upon completion of the second page, sets the form to navigate back to the first page.
-  pageThree.setGoToPage(FormApp.PageNavigationType.RESTART);
-
+  //pageTwo.setGoToPage(pageThree);
   
 }
 
@@ -121,6 +124,7 @@ function addDropdownListToForm(formId, listTitle, points = false){
   if (points > 0){
     newItem.setPoints(points)
   }
+  return newItem
 }
 
 
