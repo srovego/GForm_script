@@ -63,15 +63,21 @@ function testPages2(){
         .setGoToPage(FormApp.PageNavigationType.SUBMIT);
 
     var students = ["Student 1", "Student 2", "Student 3"];
+    var correctStatus = [true, false, false]
+    
+    //var studentSelect = form.addCheckboxItem()
 
-    var studentSelect = form.addCheckboxItem()
+    var studentSelect = form.addListItem()
         .setTitle(className + ' absent')
         .setHelpText("Укажи отсутствующих студентов");
     
     var studentChoices = [];
     for(var j = 0; j < students.length; j++){
-      studentChoices.push(studentSelect.createChoice(students[j]));
+      studentChoices.push(studentSelect.createChoice(students[j], correctStatus[j]));
     }
+    //item.setChoices(
+    //[item.createChoice(values[0], answersCorrectStatus[0]),
+
 
     studentSelect.setChoices(studentChoices)
 
