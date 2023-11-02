@@ -41,53 +41,7 @@ function testPages(){
 
 }
 
-function testPages2(){
-  //https://www.youtube.com/watch?v=Adm7Ah-yyx8&t=312s
 
-  formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
-  form = FormApp.openById(formId)
-
-  var sheets = ["Механика", "Электрика"]
-
-  //Первый выбор - в какой раздел топать
-  var classSelect = form.addMultipleChoiceItem();
-  classSelect.setTitle("Выбери раздел")
-
-  var classChoises = []
-  for(var i = 0; i < sheets.length; i++){
-    //Для каждого из элементов списка sheets
-    var className = sheets[i];
-
-    var classSection = form.addPageBreakItem()
-        .setTitle(className)
-        .setGoToPage(FormApp.PageNavigationType.SUBMIT);
-
-    var students = ["Student 1", "Student 2", "Student 3"];
-    var correctStatus = [true, false, false]
-    
-    //var studentSelect = form.addCheckboxItem()
-
-    var studentSelect = form.addListItem()
-        .setTitle(className + ' absent')
-        .setHelpText("Укажи отсутствующих студентов");
-    
-    var studentChoices = [];
-    for(var j = 0; j < students.length; j++){
-      studentChoices.push(studentSelect.createChoice(students[j], correctStatus[j]));
-    }
-    //item.setChoices(
-    //[item.createChoice(values[0], answersCorrectStatus[0]),
-
-
-    studentSelect.setChoices(studentChoices)
-
-    classChoises.push(classSelect.createChoice(className, classSection))
-
-
-  }
-  classSelect.setChoices(classChoises)
-
-}
 
 function logTitleId(value){
   Logger.log(value.getTitle())
@@ -293,6 +247,53 @@ function updateDropdownUsingTitle(form, title, values, correctAnswer = false){
   Logger.log("Обновление списка по имени. Заполняемые значения: " + String(values) + ". Корректное значение: " + String(correctAnswer))
 }
 
+function testPages2(){
+  //https://www.youtube.com/watch?v=Adm7Ah-yyx8&t=312s
+
+  formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
+  form = FormApp.openById(formId)
+
+  var sheets = ["Механика", "Электрика"]
+
+  //Первый выбор - в какой раздел топать
+  var classSelect = form.addMultipleChoiceItem();
+  classSelect.setTitle("Выбери раздел")
+
+  var classChoises = []
+  for(var i = 0; i < sheets.length; i++){
+    //Для каждого из элементов списка sheets
+    var className = sheets[i];
+
+    var classSection = form.addPageBreakItem()
+        .setTitle(className)
+        .setGoToPage(FormApp.PageNavigationType.SUBMIT);
+
+    var students = ["Student 1", "Student 2", "Student 3"];
+    var correctStatus = [true, false, false]
+    
+    //var studentSelect = form.addCheckboxItem()
+
+    var studentSelect = form.addListItem()
+        .setTitle(className + ' absent')
+        .setHelpText("Укажи отсутствующих студентов");
+    
+    var studentChoices = [];
+    for(var j = 0; j < students.length; j++){
+      studentChoices.push(studentSelect.createChoice(students[j], correctStatus[j]));
+    }
+    //item.setChoices(
+    //[item.createChoice(values[0], answersCorrectStatus[0]),
+
+
+    studentSelect.setChoices(studentChoices)
+
+    classChoises.push(classSelect.createChoice(className, classSection))
+
+
+  }
+  classSelect.setChoices(classChoises)
+
+}
 
 function updateDropdown(form, id, values, correctAnswer = false){
   var item = form.getItemById(id).asListItem()
@@ -300,20 +301,12 @@ function updateDropdown(form, id, values, correctAnswer = false){
 
   answersCorrectStatus = getCorrectStatusArray(values, numberOfVariants,correctAnswer)
 
-  //Проверка на ситуацию, если в массивах менее 5 элементов (добавляем пустые)
-  if (valuesNumber<5){
-    while(values.length < 5){
-      values.push("Empty answer " + String(values.length + 1))
-      answersCorrectStatus.push(false)
-    }
-  }
 
-  item.setChoices(
-    [item.createChoice(values[0], answersCorrectStatus[0]),
-    item.createChoice(values[1], answersCorrectStatus[1]),
-    item.createChoice(values[2], answersCorrectStatus[2]),
-    item.createChoice(values[3], answersCorrectStatus[3]),
-    item.createChoice(values[4], answersCorrectStatus[4]),]);
+  var itemChoices = [];
+    for(var j = 0; j < values.length; j++){
+      itemChoices.push(item.createChoice(values[j], answersCorrectStatus[j]));
+    }
+  item.setChoices(itemChoices)
   
 
 }
