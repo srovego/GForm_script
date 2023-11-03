@@ -172,21 +172,23 @@ function main(){
   Logger.log(questionsList)
 }
 
-function testCalcs(){
-  a = Math.floor(8/3)
-  Logger.log(a)
-
-}
-
 function createSections(formId, questionsList, questionsOnOneSection = 10){
   sectionsArray = []
-  
+  form = FormApp.openById(formId)
+
   var sectionsToCreate = Math.floor(questionsList.length / questionsOnOneSection)
   if (questionsList.length % questionsOnOneSection > 0){
     //Есть остаток от деления
     sectionsToCreate += 1;
   }
+
   Logger.log("Необходимо создать " + String(sectionsToCreate) + " разделов")
+
+  for (s = 1; s <=sectionsToCreate; s++){
+    var newSection = form.addPageBreakItem()
+                          .setTitle("Группа вопросов " + String(s) + " из " + String(sectionsToCreate));
+    sectionsArray.push(newSection)                      
+  }
 
   return sectionsArray
 }
@@ -341,4 +343,3 @@ function getQuestionValues() {
   var returnData = questionSheet.getDataRange().getValues();
   return returnData;
 }
-
