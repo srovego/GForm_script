@@ -5,7 +5,7 @@ const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const numberOfVariants = 5
-const maxQuestionsOnOneSection = 2
+const maxQuestionsOnOneSection = 3
 
 function testSectionsCreation(){
   formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
@@ -160,16 +160,21 @@ function main(){
   questionsList = getWsHeaderData(ssID, ss_sheetName)
 
   //Создаем необходимое кол-во разделов (секций)
-  sections = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
+  sectionsArray = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
 
   //Создаем пустые выпадающие списки с соответствующими вопросами
+  questionsArray = []
   questionsList.forEach(function(question){
-    addDropdownListToForm(formId = newFormId, listTitle = question, points = 5)
+    questionsArray.push(addDropdownListToForm(formId = newFormId, listTitle = question, points = 5) )
   } );
   
   //Заполняем опции ответов
   fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
   Logger.log(questionsList)
+
+  //распределяем созданные вопросы по разделам
+  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray)
+
 }
 
 function createSections(formId, questionsList, questionsOnOneSection = 10){
