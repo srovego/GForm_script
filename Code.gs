@@ -173,9 +173,27 @@ function main(){
   Logger.log(questionsList)
 
   //распределяем созданные вопросы по разделам
-  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray)
+  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
+}
+
+function distributeQuestionBySections(formId, questionsArray, sectionsArray, questionsOnOneSection){
+  form = FormApp.openById(formId);
+  questionsNumber = questionsArray.length;
+  // sectionsNumber = sectionsArray.length;
+
+
+  counter = 0;
+  for (q = 0; q < questionsNumber; q++){
+    
+    section = Math.floor(q / questionsOnOneSection)
+    sectionToMoveIndex = form.getItemById(sectionsArray[section]).getIndex() + 1
+    form.moveItem(questionsArray[q].getIndex(), sectionToMoveIndex)
+    Logger.log("Вопрос " + String(q) + " перемещается в секцию " + String(section))
+  }
+
 
 }
+
 
 function createSections(formId, questionsList, questionsOnOneSection = 10){
   sectionsArray = []
@@ -189,11 +207,12 @@ function createSections(formId, questionsList, questionsOnOneSection = 10){
 
   Logger.log("Необходимо создать " + String(sectionsToCreate) + " разделов")
 
-  for (s = 1; s <=sectionsToCreate; s++){
+  for (s = 1; s <= sectionsToCreate; s++){
     var newSection = form.addPageBreakItem()
                           .setTitle("Группа вопросов " + String(s) + " из " + String(sectionsToCreate));
-    sectionsArray.push(newSection)                      
+    sectionsArray.push(newSection.getId())                      
   }
+  //Возвращаем массив идентификаторов разделов
 
   return sectionsArray
 }
@@ -220,7 +239,12 @@ function createEmptyForm(title, folderId = false, isQuiz = false){
 //функция создает пустую форму и возвращает ее ID. При  необходимости - форма перемещается в папку folderId
   var item = title
   var form = FormApp.create(item)
-    .setTitle(item);
+    .setTitle(item)
+    .setPublishingSummary(true)
+    .setConfirmationMessage("Форма заполнена. Результаты будут высланы на вашу почту.")
+    .setCollectEmail(false)
+    .setProgressBar(true)
+    .setRequireLogin(true);
   form.setDestination
   newFormId = form.getId()
   
