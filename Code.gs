@@ -5,8 +5,9 @@ const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const numberOfVariants = 5
+const maxQuestionsOnOneSection = 2
 
-function testPages(){
+function testSectionsCreation(){
   formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
   form = FormApp.openById(formId)
 
@@ -157,7 +158,10 @@ function main(){
   
   //Считываем список вопросов
   questionsList = getWsHeaderData(ssID, ss_sheetName)
-  
+
+  //Создаем необходимое кол-во разделов (секций)
+  sections = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
+
   //Создаем пустые выпадающие списки с соответствующими вопросами
   questionsList.forEach(function(question){
     addDropdownListToForm(formId = newFormId, listTitle = question, points = 5)
@@ -166,6 +170,25 @@ function main(){
   //Заполняем опции ответов
   fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
   Logger.log(questionsList)
+}
+
+function testCalcs(){
+  a = Math.floor(8/3)
+  Logger.log(a)
+
+}
+
+function createSections(formId, questionsList, questionsOnOneSection = 10){
+  sectionsArray = []
+  
+  var sectionsToCreate = Math.floor(questionsList.length / questionsOnOneSection)
+  if (questionsList.length % questionsOnOneSection > 0){
+    //Есть остаток от деления
+    sectionsToCreate += 1;
+  }
+  Logger.log("Необходимо создать " + String(sectionsToCreate) + " разделов")
+
+  return sectionsArray
 }
 
 
@@ -205,37 +228,6 @@ function createEmptyForm(title, folderId = false, isQuiz = false){
   return newFormId
 }
 
-function temp_createForm(title) {
-  var item = title
-  var form = FormApp.create(item)
-    .setTitle(item);
-  form.setDestination
-  
-  //Move form to the specific folder
-  var formId = form.getId()
-  fld = DriveApp.getFolderById(target_folder_id)
-  source = DriveApp.getFileById(formId);
-  moveFileToFolder(fileId = formId, destinationFolderId = target_folder_id)
-
-  //Adding items to the form
-  item_name = "Text item 1"
-  form.addTextItem()
-      .setTitle(item_name)
-      .setRequired(true);
-  
-  drop_item_name_1 = "Drop item 1"
-  form.addListItem()
-      .setTitle(drop_item_name_1)
-      .setChoiceValues(["One", "Two"])
-  
-  drop_item_name_2 = "Drop item 2"
-    form.addListItem()
-        .setTitle(drop_item_name_2)
-        .setChoiceValues(["One", "Two"])
-
-  return form
-}
-
 function updateDropdownUsingTitle(form, title, values, correctAnswer = false){
   var items = form.getItems()
   var titles = items.map(function(item){
@@ -247,8 +239,8 @@ function updateDropdownUsingTitle(form, title, values, correctAnswer = false){
   Logger.log("Обновление списка по имени. Заполняемые значения: " + String(values) + ". Корректное значение: " + String(correctAnswer))
 }
 
-function testPages2(){
-  //https://www.youtube.com/watch?v=Adm7Ah-yyx8&t=312s
+function testSectionsCreation2(){
+  //Inspired by https://www.youtube.com/watch?v=Adm7Ah-yyx8&t=312s
 
   formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
   form = FormApp.openById(formId)
