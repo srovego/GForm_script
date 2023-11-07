@@ -4,9 +4,101 @@
 const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
-const maxQuestionsOnOneSection = 3
+const maxQuestionsOnOneSection = 5
+const numberOfQuestionsInForm = 20
 const workFormId = "1bv_veVsgXFeEY-_0f8ZioJw6dw7aG5DEvD-d9Ux-0yc"
 
+
+function updateForm(){
+  form = FormApp.openById(workFormId)
+
+  deleteListItems(workFormId)
+
+  pageBreakeItems = form.getItems(FormApp.ItemType.PAGE_BREAK)
+  pageBreakeItemIDs = []
+  for (i = 0; i < pageBreakeItems.length; i++){
+    pageBreakeItemIDs.push(pageBreakeItems[i].getId())
+  }
+
+  questionsArray = []
+  questionsList = getWsHeaderData(ssID, ss_sheetName)
+  questionsList.forEach(function(question){
+      questionsArray.push(addDropdownListToForm(formId = workFormId, listTitle = question, points = 5) )
+    } );
+  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = workFormId, shuffle = true)
+
+  keepRandomQuestions(formId = workFormId, totalQuestions = 11)
+  listItems = form.getItems(FormApp.ItemType.LIST) // Список всех оставшихся элементов указанного типа (вопросы с ответами)
+
+  distributeQuestionBySections(formId = workFormId, questionsArray = listItems, pageBreakeItemIDs, questionsOnOneSection = 3)
+
+}
+
+function main(){
+  //Тестовые запуски функций
+  //form = createForm("A test form")
+  //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
+  //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
+  
+  //Фукнции, составляющие уже основную программу
+  //Создаем пустую форму
+  newFormId = createEmptyForm('An empty form', target_folder_id, isQuiz = true)
+  
+  //Создаем список вопросов (пока виртуальных)
+  questionsList = []
+  for (i = 1; i <= numberOfQuestionsInForm; i++){
+    questionsList.push("Вопрос " + String(i))
+  }
+
+  //Создаем необходимое кол-во разделов (секций)
+  sectionsArray = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
+
+  //Создаем пустые выпадающие списки с соответствующими вопросами
+  questionsArray = []
+  questionsList.forEach(function(question){
+    questionsArray.push(addDropdownListToForm(formId = newFormId, listTitle = question, points = 5) )
+  } );
+  
+  //распределяем созданные вопросы по разделам
+  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
+
+  //Заполняем опции ответов
+  //fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
+  Logger.log(questionsList)
+
+  
+}
+
+
+function main_old(){
+  //Тестовые запуски функций
+  //form = createForm("A test form")
+  //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
+  //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
+  
+  //Фукнции, составляющие уже основную программу
+  //Создаем пустую форму
+  newFormId = createEmptyForm('An empty form', target_folder_id, isQuiz = true)
+  
+  //Считываем список вопросов
+  questionsList = getWsHeaderData(ssID, ss_sheetName)
+
+  //Создаем необходимое кол-во разделов (секций)
+  sectionsArray = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
+
+  //Создаем пустые выпадающие списки с соответствующими вопросами
+  questionsArray = []
+  questionsList.forEach(function(question){
+    questionsArray.push(addDropdownListToForm(formId = newFormId, listTitle = question, points = 5) )
+  } );
+  
+  //Заполняем опции ответов
+  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
+  Logger.log(questionsList)
+
+  //распределяем созданные вопросы по разделам
+  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
+}
 
 function deleteListItems(formId){
   form = FormApp.openById(workFormId)
@@ -167,60 +259,7 @@ function keepRandomQuestions(formId, totalQuestions){
   }
 }
 
-function updateForm(){
-  form = FormApp.openById(workFormId)
 
-  deleteListItems(workFormId)
-
-  pageBreakeItems = form.getItems(FormApp.ItemType.PAGE_BREAK)
-  pageBreakeItemIDs = []
-  for (i = 0; i < pageBreakeItems.length; i++){
-    pageBreakeItemIDs.push(pageBreakeItems[i].getId())
-  }
-
-  questionsArray = []
-  questionsList = getWsHeaderData(ssID, ss_sheetName)
-  questionsList.forEach(function(question){
-      questionsArray.push(addDropdownListToForm(formId = workFormId, listTitle = question, points = 5) )
-    } );
-  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = workFormId, shuffle = true)
-
-  keepRandomQuestions(formId = workFormId, totalQuestions = 11)
-  listItems = form.getItems(FormApp.ItemType.LIST) // Список всех оставшихся элементов указанного типа (вопросы с ответами)
-
-  distributeQuestionBySections(formId = workFormId, questionsArray = listItems, pageBreakeItemIDs, questionsOnOneSection = 3)
-
-}
-
-function main(){
-  //Тестовые запуски функций
-  //form = createForm("A test form")
-  //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
-  //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
-  
-  //Фукнции, составляющие уже основную программу
-  //Создаем пустую форму
-  newFormId = createEmptyForm('An empty form', target_folder_id, isQuiz = true)
-  
-  //Считываем список вопросов
-  questionsList = getWsHeaderData(ssID, ss_sheetName)
-
-  //Создаем необходимое кол-во разделов (секций)
-  sectionsArray = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
-
-  //Создаем пустые выпадающие списки с соответствующими вопросами
-  questionsArray = []
-  questionsList.forEach(function(question){
-    questionsArray.push(addDropdownListToForm(formId = newFormId, listTitle = question, points = 5) )
-  } );
-  
-  //Заполняем опции ответов
-  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
-  Logger.log(questionsList)
-
-  //распределяем созданные вопросы по разделам
-  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
-}
 
 
 
