@@ -5,7 +5,7 @@ const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const numberOfVariants = 5
-const maxQuestionsOnOneSection = 3
+const maxQuestionsOnOneSection = 7
 
 function testSectionsCreation(){
   formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
