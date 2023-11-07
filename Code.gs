@@ -5,7 +5,7 @@ const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const maxQuestionsOnOneSection = 3
-const workFormId = "1bl1hixfq70ISrdYGvfWq3a7Ri-OWLrO072hZUbnNjv0"
+const workFormId = "1bv_veVsgXFeEY-_0f8ZioJw6dw7aG5DEvD-d9Ux-0yc"
 
 
 function deleteListItems(formId){
@@ -51,7 +51,6 @@ function testSectionsCreation(){
   theLastItemId = lastItem.getId()
   theLastItemIndex = lastItem.getIndex()
   form.moveItem(theLastItemIndex, allItems[1].getIndex())
-  
 
 }
 
@@ -156,6 +155,26 @@ function addDropdownListToForm(formId, listTitle, points = false){
   return newItem
 }
 
+function updateForm(){
+  form = FormApp.openById(workFormId)
+
+  deleteListItems(workFormId)
+
+  pageBreakeItems = form.getItems(FormApp.ItemType.PAGE_BREAK)
+  pageBreakeItemIDs = []
+  for (i = 0; i < pageBreakeItems.length; i++){
+    pageBreakeItemIDs.push(pageBreakeItems[i].getId())
+  }
+
+  questionsArray = []
+  questionsList = getWsHeaderData(ssID, ss_sheetName)
+  questionsList.forEach(function(question){
+      questionsArray.push(addDropdownListToForm(formId = workFormId, listTitle = question, points = 5) )
+    } );
+  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = workFormId, shuffle = true)
+  distributeQuestionBySections(formId = workFormId, questionsArray, pageBreakeItemIDs, questionsOnOneSection = maxQuestionsOnOneSection)
+
+}
 
 function main(){
   //Тестовые запуски функций
@@ -186,6 +205,8 @@ function main(){
   //распределяем созданные вопросы по разделам
   distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
 }
+
+
 
 function distributeQuestionBySections(formId, questionsArray, sectionsArray, questionsOnOneSection){
   form = FormApp.openById(formId);
