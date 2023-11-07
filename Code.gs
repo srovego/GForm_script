@@ -4,8 +4,21 @@
 const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
-const numberOfVariants = 5
 const maxQuestionsOnOneSection = 3
+const workFormId = "1bl1hixfq70ISrdYGvfWq3a7Ri-OWLrO072hZUbnNjv0"
+
+
+function deleteListItems(formId){
+  form = FormApp.openById(workFormId)
+  listOfItemsToDelete = form.getItems(FormApp.ItemType.LIST)
+  //listOfItemsToDelete.forEach(logTitleId)]
+  listOfItemsToDelete.forEach(deleteElement)
+}
+
+function deleteElement(element){
+  form.deleteItem(element)
+}
+
 
 function testSectionsCreation(){
   formId = "19FaTc9161gvIF8B9RgpQEb6PXL3vnrjouvPJemRrBsU"
@@ -41,8 +54,6 @@ function testSectionsCreation(){
   
 
 }
-
-
 
 function logTitleId(value){
   Logger.log(value.getTitle())
@@ -322,7 +333,7 @@ function updateDropdown(form, id, values, correctAnswer = false){
   var item = form.getItemById(id).asListItem()
   valuesNumber = values.length
 
-  answersCorrectStatus = getCorrectStatusArray(values, numberOfVariants,correctAnswer)
+  answersCorrectStatus = getCorrectStatusArray(values, correctAnswer)
 
 
   var itemChoices = [];
@@ -334,10 +345,10 @@ function updateDropdown(form, id, values, correctAnswer = false){
 
 }
 
-function getCorrectStatusArray(values, numberOfVariants, correctAnswer = false){
+function getCorrectStatusArray(values, correctAnswer = false){
   var result = []
   if (correctAnswer == false){
-    for (i = 1; i < numberOfVariants; i++){
+    for (i = 1; i < values.length; i++){
       result.push(false)
     }
   }
