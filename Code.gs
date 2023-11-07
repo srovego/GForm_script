@@ -155,6 +155,18 @@ function addDropdownListToForm(formId, listTitle, points = false){
   return newItem
 }
 
+function keepRandomQuestions(formId, totalQuestions){
+  //Получаем список вопросов (ранее заполненных и настроенных с опциями), перемешиваем, выбираем первые totalQuestions, остальные удаляем
+  form = FormApp.openById(formId)
+
+  listItems = form.getItems(FormApp.ItemType.LIST) // Список всех элементов указанного типа (вопросы с ответами)
+  listItems = shuffleArray(listItems) // перемешиваем вопросы
+  // оставляем только первые N(5) вопросов
+  for (i = totalQuestions; i < listItems.length; i++){
+    form.deleteItem(listItems[i])
+  }
+}
+
 function updateForm(){
   form = FormApp.openById(workFormId)
 
@@ -172,7 +184,11 @@ function updateForm(){
       questionsArray.push(addDropdownListToForm(formId = workFormId, listTitle = question, points = 5) )
     } );
   fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = workFormId, shuffle = true)
-  distributeQuestionBySections(formId = workFormId, questionsArray, pageBreakeItemIDs, questionsOnOneSection = maxQuestionsOnOneSection)
+
+  keepRandomQuestions(formId = workFormId, totalQuestions = 11)
+  listItems = form.getItems(FormApp.ItemType.LIST) // Список всех оставшихся элементов указанного типа (вопросы с ответами)
+
+  distributeQuestionBySections(formId = workFormId, questionsArray = listItems, pageBreakeItemIDs, questionsOnOneSection = 3)
 
 }
 
