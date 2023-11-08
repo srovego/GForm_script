@@ -62,10 +62,13 @@ function main(){
   //распределяем созданные вопросы по разделам
   distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
 
-  //Заполняем опции ответов
-  //fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
-  Logger.log(questionsList)
+  // Формируем список вопросов, считанных из исходного файла, состоящих из numberOfQuestionsInForm вопросов. Получаем заголовки из файла, затем
+  // перемешиваем их и выбираем первые numberOfQuestionsInForm штук
 
+  //randomQuestionHeaders = getRandomQuestions(gsheetId = ssID, sheetName = ss_sheetName, numberOfQuestionToGet = numberOfQuestionsInForm)
+
+  //Заполняем имеющиеся в форме элементы типа List определенным списком вопросов, и  настраиваем ответы
+  //fillFormListsByQuestions(gsheetId = ssID, sheetName = ss_sheetName, questionHeaders = randomQuestionHeaders, formId = newFormId)
   
 }
 
