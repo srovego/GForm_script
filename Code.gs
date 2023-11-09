@@ -6,31 +6,20 @@ const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const maxQuestionsOnOneSection = 5
 const numberOfQuestionsInForm = 20
-const workFormId = "1bv_veVsgXFeEY-_0f8ZioJw6dw7aG5DEvD-d9Ux-0yc"
+const workFormId = "1NLVXF7ylX9tsdKK_zWzn0r_e8njcVHFRrjMp_NOPJlU"
 
 
 function updateForm(){
   form = FormApp.openById(workFormId)
 
-  deleteListItems(workFormId)
+  // Формируем список вопросов, считанных из исходного файла, состоящих из numberOfQuestionsInForm вопросов. Получаем заголовки из файла, затем
+  // перемешиваем их и выбираем первые numberOfQuestionsInForm штук
 
-  pageBreakeItems = form.getItems(FormApp.ItemType.PAGE_BREAK)
-  pageBreakeItemIDs = []
-  for (i = 0; i < pageBreakeItems.length; i++){
-    pageBreakeItemIDs.push(pageBreakeItems[i].getId())
-  }
+  randomQuestionIndexes = getRandomQuestionIndexes(gsheetId = ssID, sheetName = ss_sheetName, numberOfQuestionToGet = numberOfQuestionsInForm)
+  Logger.log("Будем заполнять вопросами с номерами: " + String(randomQuestionIndexes))
 
-  questionsArray = []
-  questionsList = getWsHeaderData(ssID, ss_sheetName)
-  questionsList.forEach(function(question){
-      questionsArray.push(addDropdownListToForm(formId = workFormId, listTitle = question, points = 5) )
-    } );
-  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = workFormId, shuffle = true)
-
-  keepRandomQuestions(formId = workFormId, totalQuestions = 11)
-  listItems = form.getItems(FormApp.ItemType.LIST) // Список всех оставшихся элементов указанного типа (вопросы с ответами)
-
-  distributeQuestionBySections(formId = workFormId, questionsArray = listItems, pageBreakeItemIDs, questionsOnOneSection = 3)
+  //Заполняем имеющиеся в форме элементы типа List определенным списком вопросов, и  настраиваем ответы
+  fillFormListsByQuestions(gsheetId = ssID, sheetName = ss_sheetName, questionsIndexesArray = randomQuestionIndexes, formId = workFormId)
 
 }
 
