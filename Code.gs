@@ -65,13 +65,46 @@ function main(){
   // Формируем список вопросов, считанных из исходного файла, состоящих из numberOfQuestionsInForm вопросов. Получаем заголовки из файла, затем
   // перемешиваем их и выбираем первые numberOfQuestionsInForm штук
 
-  randomQuestionHeaders = getRandomQuestionIndexes(gsheetId = ssID, sheetName = ss_sheetName, numberOfQuestionToGet = numberOfQuestionsInForm)
-  Logger.log("Будем заполнять вопросами с номерами: " + String(randomQuestionHeaders))
+  randomQuestionIndexes = getRandomQuestionIndexes(gsheetId = ssID, sheetName = ss_sheetName, numberOfQuestionToGet = numberOfQuestionsInForm)
+  Logger.log("Будем заполнять вопросами с номерами: " + String(randomQuestionIndexes))
 
   //Заполняем имеющиеся в форме элементы типа List определенным списком вопросов, и  настраиваем ответы
-  //fillFormListsByQuestions(gsheetId = ssID, sheetName = ss_sheetName, questionHeaders = randomQuestionHeaders, formId = newFormId)
+  fillFormListsByQuestions(gsheetId = ssID, sheetName = ss_sheetName, questionsIndexesArray = randomQuestionIndexes, formId = newFormId)
   
 }
+
+function fillFormListsByQuestions(gsheetId, sheetName, questionsIndexesArray, formId){
+  var allData = getRangeDataFromGSheet(gsheetId, sheetName)
+  form = FormApp.openById(formId)
+  form.getItems()
+
+  allListItems = form.getItems(FormApp.ItemType.LIST) //Массив всеъ элементов типа List
+
+
+  for (q = 0; q < questionsIndexesArray.length; q++){
+    //Для каждого индекса в списке индексов данных для вопросов 
+    questionData = getRangeDataFromGSheet(gsheetId, sheetName, tartCellRowNum = 1, startCellColNum = questionsIndexesArray[q], rowsToRead = false, colsToRead = 1)
+    wordToTranslate = questionData[0]
+    correctAnswer = questionData[1]
+    answers = shuffleArray(questionData.slice(1))
+    Logger.log("Для вопроса с номером " + String(q) +
+     ". Слово для перевода: " + String(wordToTranslate) +
+     " . Варианты ответов: " + String(answers) + ". Корректный ответ: " + String(correctAnswer))
+    updateDropdown(form = form,
+                  id = allListItems[q].getId(),
+                  values = answers,
+                  correctAnswer = correctAnswer,
+                  helpText = "Укажите корректный перевод слова: " + String(wordToTranslate))
+  }
+
+}
+
+
+///------------------------Copy - toDelete--------
+
+
+
+//--------------------------
 
 function getRandomQuestionIndexes(gsheetId, sheetName, numberOfQuestionToGet){
   //Возвращаем массив с номерами столбцов данных, которые будут использованы для заполнения вопросов. Т.е. на выходе - массив с номерами столбцов.
@@ -79,13 +112,12 @@ function getRandomQuestionIndexes(gsheetId, sheetName, numberOfQuestionToGet){
   var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
   wsDataColsNum = wsData.getLastColumn()
   wsDataRowsNum = wsData.getLastRow()
-  for (i=0; i<wsDataColsNum; i++){
+  for (i=1; i<=wsDataColsNum; i++){
     questionsIndexes.push(i)
   }
   questionsIndexes = shuffleArray(questionsIndexes)
   
   return questionsIndexes.slice(0,numberOfQuestionToGet)
-  
 }
 
 
@@ -424,19 +456,21 @@ function testSectionsCreation2(){
 
 }
 
-function updateDropdown(form, id, values, correctAnswer = false){
+function updateDropdown(form, id, values, correctAnswer = false, helpText = false){
   var item = form.getItemById(id).asListItem()
   valuesNumber = values.length
 
   answersCorrectStatus = getCorrectStatusArray(values, correctAnswer)
 
+  if(helpText != false){
+    item.setHelpText(helpText)
+  }
 
   var itemChoices = [];
     for(var j = 0; j < values.length; j++){
       itemChoices.push(item.createChoice(values[j], answersCorrectStatus[j]));
     }
   item.setChoices(itemChoices)
-  
 
 }
 
