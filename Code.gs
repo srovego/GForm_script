@@ -324,7 +324,7 @@ function distributeQuestionBySections(formId, questionsArray, sectionsArray, que
   for (q = 0; q < questionsNumber; q++){
     
     section = Math.floor(q / questionsOnOneSection)
-    sectionToMoveIndex = form.getItemById(sectionsArray[section]).getIndex() + 1
+    sectionToMoveIndex = form.getItemById(sectionsArray[section]).getIndex() + 1 + q % questionsOnOneSection
     form.moveItem(questionsArray[q].getIndex(), sectionToMoveIndex)
     Logger.log("Вопрос " + String(q) + " перемещается в секцию " + String(section))
   }
