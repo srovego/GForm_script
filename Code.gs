@@ -65,10 +65,26 @@ function main(){
   // Формируем список вопросов, считанных из исходного файла, состоящих из numberOfQuestionsInForm вопросов. Получаем заголовки из файла, затем
   // перемешиваем их и выбираем первые numberOfQuestionsInForm штук
 
-  //randomQuestionHeaders = getRandomQuestions(gsheetId = ssID, sheetName = ss_sheetName, numberOfQuestionToGet = numberOfQuestionsInForm)
+  randomQuestionHeaders = getRandomQuestionIndexes(gsheetId = ssID, sheetName = ss_sheetName, numberOfQuestionToGet = numberOfQuestionsInForm)
+  Logger.log("Будем заполнять вопросами с номерами: " + String(randomQuestionHeaders))
 
   //Заполняем имеющиеся в форме элементы типа List определенным списком вопросов, и  настраиваем ответы
   //fillFormListsByQuestions(gsheetId = ssID, sheetName = ss_sheetName, questionHeaders = randomQuestionHeaders, formId = newFormId)
+  
+}
+
+function getRandomQuestionIndexes(gsheetId, sheetName, numberOfQuestionToGet){
+  //Возвращаем массив с номерами столбцов данных, которые будут использованы для заполнения вопросов. Т.е. на выходе - массив с номерами столбцов.
+  questionsIndexes = []
+  var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
+  wsDataColsNum = wsData.getLastColumn()
+  wsDataRowsNum = wsData.getLastRow()
+  for (i=0; i<wsDataColsNum; i++){
+    questionsIndexes.push(i)
+  }
+  questionsIndexes = shuffleArray(questionsIndexes)
+  
+  return questionsIndexes.slice(0,numberOfQuestionToGet)
   
 }
 
