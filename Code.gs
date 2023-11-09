@@ -1,6 +1,8 @@
 //1. Создание формы и размещение в требуемой папке
 //2. Добавление элемента формы типа Список
 // Тестовое изменение текстового поля для проверки синхронизации через github
+// Добавить обновление формы по ее заполнению - https://youtu.be/vYQE9ltt2Yg?si=BsIiVv80BJCCnF6H
+
 const target_folder_id = '1506pJrf_J8UtjILlEUr9qjvjwcQjSkPt'
 const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
@@ -8,8 +10,26 @@ const maxQuestionsOnOneSection = 5
 const numberOfQuestionsInForm = 20
 const workFormId = "1NLVXF7ylX9tsdKK_zWzn0r_e8njcVHFRrjMp_NOPJlU"
 
+function setUpTriger(){
+  ScriptApp.newTrigger('formSubmitActions')
+  .forForm(workFormId)
+  .onFormSubmit()
+  .create();
+}
+
+function formSubmitActions(e){
+  sendConfirmationInfo(e)
+  updateForm()
+}
+
+function sendConfirmation(e){
+  const recipient = e.response.getRespondentEmail()
+  Logger.log(recipient)
+}
 
 function updateForm(){
+
+
   form = FormApp.openById(workFormId)
 
   // Формируем список вопросов, считанных из исходного файла, состоящих из numberOfQuestionsInForm вопросов. Получаем заголовки из файла, затем
