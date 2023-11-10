@@ -11,6 +11,12 @@ const numberOfQuestionsInForm = 20
 const numberOfAnswerVariants = 10
 const workFormId = "1NLVXF7ylX9tsdKK_zWzn0r_e8njcVHFRrjMp_NOPJlU"
 
+const formDescr = "В данном тесте вам необходимо выбрать правильный перевод предложенного термина. \n" +
+   "Результаты будут высланы на вашу электронную почту.\n" + 
+   "Целевое значение баллов по итогам прохождения теста - не менее 0.9 от общего количества баллов.\n" + 
+   "Обратите внимание, что проверяется знание только около 20 терминов.\n" + 
+   "\nПосле заполнения - содержание формы автоматически обновляется, что позволяет вам при повторном заполнении пройти проверку знания другого набора терминов."
+
 function setUpTriger(){
   ScriptApp.newTrigger('formSubmitActions')
   .forForm(workFormId)
@@ -142,7 +148,7 @@ function main(){
   
   //Фукнции, составляющие уже основную программу
   //Создаем пустую форму
-  newFormId = createEmptyForm('Тест на знание терминов Helios.', target_folder_id, isQuiz = true)
+  newFormId = createEmptyForm('Тест на знание терминов Helios.', target_folder_id, isQuiz = true, description = formDescr)
   
   //Создаем список вопросов (пока виртуальных)
   questionsList = []
@@ -430,28 +436,13 @@ function createSections(formId, questionsList, questionsOnOneSection = 10){
 }
 
 
-function main_temp(){
-  var labels = wsData.getRange(1, 1, 1, wsData.getLastColumn()).getValues()[0];
-  //Logger.log(labels)
-  
-  form = createForm("A test form")
-  
-  labels.forEach(function(label, i){
-    var options = wsData
-      .getRange(2, i + 1, wsData.getLastRow() - 1, 1)
-      .getValues()
-      .map(function(o){return o[0]})
-      .filter(function(o){return o !==""});
-    updateDropdownUsingTitle(form, label, options)
-  });
-}
-
-
-function createEmptyForm(title, folderId = false, isQuiz = false){
+function createEmptyForm(title, folderId = false, isQuiz = false, description = false){
 //функция создает пустую форму и возвращает ее ID. При  необходимости - форма перемещается в папку folderId
+
   var item = title
   var form = FormApp.create(item)
     .setTitle(item)
+    .setDescription(description)
     .setPublishingSummary(true)
     .setConfirmationMessage("Форма заполнена. Результаты будут высланы на вашу почту.")
     .setCollectEmail(false)
