@@ -89,8 +89,8 @@ function getTextAboutAnswers(askedWord, answeredWord, pointsForQuestion, maxPoin
   i_max = askedWord.length
   for (var i = 0; i<i_max; i++){
     var newText = "\nВопрос: " + String(askedWord[i]) +
-        ". Полученный ответ: " + String(answeredWord[i]) + 
-        ". Баллов: " + String(pointsForQuestion[i] + " из " + String(maxPointsForQuestion[i]) + "\n")
+        ".\nПолученный ответ: " + String(answeredWord[i]) + 
+        ".\nБаллов: " + String(pointsForQuestion[i] + " из " + String(maxPointsForQuestion[i]) + "\n")
     result_text.push(newText)
   }
   return result_text
