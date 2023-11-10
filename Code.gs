@@ -61,6 +61,7 @@ function formSubmitActions(){
   }
   body = "Набрано " + String(answerPoints) + " из " + String(maxPoints) + " баллов"
   GmailApp.sendEmail(recepient, "Результаты теста", body)
+  updateForm()
 }
 
 function castQuizItem_(item, itemType) {
@@ -115,10 +116,6 @@ function castQuizItem_(item, itemType) {
   return null;
 }
 
-function sendConfirmation(e){
-  const recipient = e.response.getRespondentEmail()
-  Logger.log(recipient)
-}
 
 function updateForm(){
 
