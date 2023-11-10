@@ -17,7 +17,8 @@ const formDescr = "В данном тесте вам необходимо выб
    "Обратите внимание, что проверяется знание только около 20 терминов.\n" + 
    "\nПосле заполнения - содержание формы автоматически обновляется, что позволяет вам при повторном заполнении пройти проверку знания другого набора терминов."
 
-const emailContent_2 = "\Набор использованных терминов взят из электронной таблицы https://docs.google.com/spreadsheets/d/1eUl7YxoAenjavTvtdiRnFdVU1osWfEY5Xk_Wnjhz8IU/. "
+const emailContent_2 = "\nНабор использованных терминов взят из электронной таблицы https://docs.google.com/spreadsheets/d/1eUl7YxoAenjavTvtdiRnFdVU1osWfEY5Xk_Wnjhz8IU/. "
+
 function setUpTriger(){
   ScriptApp.newTrigger('formSubmitActions')
   .forForm(workFormId)
