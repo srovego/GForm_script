@@ -8,6 +8,7 @@ const ssID = "12IE4ePnIS4lGb8t8jZIsbuM03ASMfkfI5gCgHvXn8hk"
 const ss_sheetName = "Sheet1"
 const maxQuestionsOnOneSection = 5
 const numberOfQuestionsInForm = 20
+const numberOfAnswerVariants = 10
 const workFormId = "1NLVXF7ylX9tsdKK_zWzn0r_e8njcVHFRrjMp_NOPJlU"
 
 function setUpTriger(){
@@ -173,6 +174,42 @@ function main(){
 }
 
 function fillFormListsByQuestions(gsheetId, sheetName, questionsIndexesArray, formId){
+  
+  
+  
+  form = FormApp.openById(formId)
+  form.getItems()
+
+  allListItems = form.getItems(FormApp.ItemType.LIST) //Массив всеъ элементов типа List
+
+
+  for (var q = 0; q < questionsIndexesArray.length; q++){
+    var allData = getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startCellColNum = 1, rowsToRead = 2) // Считываем все данные (строка 1 - вопрос, строка 2 - ответ)
+    //Для каждого индекса в списке индексов данных для вопросов  
+    var wordToTranslate = allData[0][questionsIndexesArray[q] - 1]
+    
+    var correctAnswer = allData[1][questionsIndexesArray[q] - 1]
+    //var nonCorrectAnswers = allData[1].splice(q, 1) // все варианты ответов, за исключением корректного
+    var nonCorrectAnswers = allData[1]// все варианты ответов
+    nonCorrectAnswers.splice(questionsIndexesArray[q] - 1, 1)
+    nonCorrectAnswers = shuffleArray(nonCorrectAnswers).slice(0, numberOfAnswerVariants - 1) // перемешиваем и берем первые N-1 вопросов
+    var allAnswers = nonCorrectAnswers
+    allAnswers.push(correctAnswer) // Добавляем в массив корректное значение
+    allAnswers = shuffleArray(allAnswers)
+    
+    Logger.log("Для вопроса с номером " + String(q) +
+     ". Слово для перевода: " + String(wordToTranslate) +
+     " . Варианты ответов: " + String(allAnswers) + ". Корректный ответ: " + String(correctAnswer))
+    updateDropdown(form = form,
+                  id = allListItems[q].getId(),
+                  values = allAnswers,
+                  correctAnswer = correctAnswer,
+                  helpText = "Укажите корректный перевод слова: " + String(wordToTranslate))
+  }
+
+}
+
+function fillFormListsByQuestions_old(gsheetId, sheetName, questionsIndexesArray, formId){
   var allData = getRangeDataFromGSheet(gsheetId, sheetName)
   form = FormApp.openById(formId)
   form.getItems()
@@ -182,7 +219,7 @@ function fillFormListsByQuestions(gsheetId, sheetName, questionsIndexesArray, fo
 
   for (q = 0; q < questionsIndexesArray.length; q++){
     //Для каждого индекса в списке индексов данных для вопросов 
-    questionData = getRangeDataFromGSheet(gsheetId, sheetName, tartCellRowNum = 1, startCellColNum = questionsIndexesArray[q], rowsToRead = false, colsToRead = 1)
+    questionData = getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startCellColNum = questionsIndexesArray[q], rowsToRead = false, colsToRead = 1)
     wordToTranslate = questionData[0]
     correctAnswer = questionData[1]
     answers = shuffleArray(questionData.slice(1))
@@ -362,6 +399,7 @@ function getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startC
   var wsData = SpreadsheetApp.openById(gsheetId).getSheetByName(sheetName)
   wsDataColsNum = wsData.getLastColumn()
   wsDataRowsNum = wsData.getLastRow()
+
 
   if (rowsToRead !=false){
     wsRowsToRead = rowsToRead;
@@ -559,7 +597,7 @@ function updateDropdown(form, id, values, correctAnswer = false, helpText = fals
   var item = form.getItemById(id).asListItem()
   valuesNumber = values.length
 
-  answersCorrectStatus = getCorrectStatusArray(values, correctAnswer)
+  var answersCorrectStatus = getCorrectStatusArray(values, correctAnswer)
 
   if(helpText != false){
     item.setHelpText(helpText)
