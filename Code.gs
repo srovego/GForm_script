@@ -60,7 +60,7 @@ function formSubmitActions(){
       
     }
   }
-  body = "Набрано " + String(answerPoints) + " из " + String(maxPoints) + " баллов"
+  body = "По итогам прохождения теста набрано " + String(answerPoints) + " из " + String(maxPoints) + " баллов"
   GmailApp.sendEmail(recepient, "Результаты теста", body)
   updateForm()
 }
@@ -142,7 +142,7 @@ function main(){
   
   //Фукнции, составляющие уже основную программу
   //Создаем пустую форму
-  newFormId = createEmptyForm('An empty form', target_folder_id, isQuiz = true)
+  newFormId = createEmptyForm('Тест на знание терминов Helios.', target_folder_id, isQuiz = true)
   
   //Создаем список вопросов (пока виртуальных)
   questionsList = []
@@ -209,39 +209,6 @@ function fillFormListsByQuestions(gsheetId, sheetName, questionsIndexesArray, fo
 
 }
 
-function fillFormListsByQuestions_old(gsheetId, sheetName, questionsIndexesArray, formId){
-  var allData = getRangeDataFromGSheet(gsheetId, sheetName)
-  form = FormApp.openById(formId)
-  form.getItems()
-
-  allListItems = form.getItems(FormApp.ItemType.LIST) //Массив всеъ элементов типа List
-
-
-  for (q = 0; q < questionsIndexesArray.length; q++){
-    //Для каждого индекса в списке индексов данных для вопросов 
-    questionData = getRangeDataFromGSheet(gsheetId, sheetName, startCellRowNum = 1, startCellColNum = questionsIndexesArray[q], rowsToRead = false, colsToRead = 1)
-    wordToTranslate = questionData[0]
-    correctAnswer = questionData[1]
-    answers = shuffleArray(questionData.slice(1))
-    Logger.log("Для вопроса с номером " + String(q) +
-     ". Слово для перевода: " + String(wordToTranslate) +
-     " . Варианты ответов: " + String(answers) + ". Корректный ответ: " + String(correctAnswer))
-    updateDropdown(form = form,
-                  id = allListItems[q].getId(),
-                  values = answers,
-                  correctAnswer = correctAnswer,
-                  helpText = "Укажите корректный перевод слова: " + String(wordToTranslate))
-  }
-
-}
-
-
-///------------------------Copy - toDelete--------
-
-
-
-//--------------------------
-
 function getRandomQuestionIndexes(gsheetId, sheetName, numberOfQuestionToGet){
   //Возвращаем массив с номерами столбцов данных, которые будут использованы для заполнения вопросов. Т.е. на выходе - массив с номерами столбцов.
   questionsIndexes = []
@@ -256,36 +223,6 @@ function getRandomQuestionIndexes(gsheetId, sheetName, numberOfQuestionToGet){
   return questionsIndexes.slice(0,numberOfQuestionToGet)
 }
 
-
-function main_old(){
-  //Тестовые запуски функций
-  //form = createForm("A test form")
-  //headerData = getWsHeaderData(gsheetId = ssID, sheetName = ss_sheetName)
-  //getRangeDataFromGSheet(gsheetId = ssID, sheetName = ss_sheetName)
-  
-  //Фукнции, составляющие уже основную программу
-  //Создаем пустую форму
-  newFormId = createEmptyForm('An empty form', target_folder_id, isQuiz = true)
-  
-  //Считываем список вопросов
-  questionsList = getWsHeaderData(ssID, ss_sheetName)
-
-  //Создаем необходимое кол-во разделов (секций)
-  sectionsArray = createSections(formId = newFormId, questionsList = questionsList, questionsOnOneSection = maxQuestionsOnOneSection)
-
-  //Создаем пустые выпадающие списки с соответствующими вопросами
-  questionsArray = []
-  questionsList.forEach(function(question){
-    questionsArray.push(addDropdownListToForm(formId = newFormId, listTitle = question, points = 5) )
-  } );
-  
-  //Заполняем опции ответов
-  fillAnswerOptions(gsheetId = ssID, sheetName = ss_sheetName, formId = newFormId, shuffle = true)
-  Logger.log(questionsList)
-
-  //распределяем созданные вопросы по разделам
-  distributeQuestionBySections(formId = newFormId, questionsArray, sectionsArray, questionsOnOneSection = maxQuestionsOnOneSection)
-}
 
 function deleteListItems(formId){
   form = FormApp.openById(workFormId)
