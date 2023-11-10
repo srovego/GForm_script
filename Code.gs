@@ -17,6 +17,7 @@ const formDescr = "В данном тесте вам необходимо выб
    "Обратите внимание, что проверяется знание только около 20 терминов.\n" + 
    "\nПосле заполнения - содержание формы автоматически обновляется, что позволяет вам при повторном заполнении пройти проверку знания другого набора терминов."
 
+const emailContent_2 = "\Набор использованных терминов взят из электронной таблицы https://docs.google.com/spreadsheets/d/1eUl7YxoAenjavTvtdiRnFdVU1osWfEY5Xk_Wnjhz8IU/. "
 function setUpTriger(){
   ScriptApp.newTrigger('formSubmitActions')
   .forForm(workFormId)
@@ -25,10 +26,15 @@ function setUpTriger(){
 }
 
 function formSubmitActions(){
+  var askedWord = []
+  var answeredWord = []
+  var pointsForQuestion = []
+  var maxPointsForQuestion = []
+
   var form = FormApp.openById(workFormId);
   // Get the most recently submitted form response
   var response = form.getResponses().reverse()[0];
-  recepient = response.getRespondentEmail()
+  var recepient = response.getRespondentEmail()
 
   // Gets an array of all items in the form.
   var items = form.getItems();
@@ -39,7 +45,7 @@ function formSubmitActions(){
 
     // Get the item's title text
     var qTitle = question.getTitle();
-
+    var askedQuestion = question.getHelpText()
     // Get the item's type like Checkbox, Multiple Choice, Grid, etc.
     var qType = question.getType();
 
@@ -59,6 +65,12 @@ function formSubmitActions(){
       var maxScore = item.getPoints();
       var gradableResponseForItem = response.getGradableResponseForItem(question);
       var score = gradableResponseForItem.getScore();
+      
+      askedWord.push(askedQuestion)
+      answeredWord.push(answer)
+      pointsForQuestion.push(score)
+      maxPointsForQuestion.push(maxScore)
+
       //Logger.log(String(qType), qTitle, answer, maxScore, score);
       //Logger.log(qTitle + answer + maxScore + score);
       answerPoints += score;
@@ -66,9 +78,22 @@ function formSubmitActions(){
       
     }
   }
-  body = "По итогам прохождения теста набрано " + String(answerPoints) + " из " + String(maxPoints) + " баллов"
+  var answersInfo = getTextAboutAnswers(askedWord, answeredWord, pointsForQuestion, maxPointsForQuestion)
+  var body = "По итогам прохождения теста набрано " + String(answerPoints) + " из " + String(maxPoints) + " баллов." + emailContent_2 + "\n\nИнформация по ответам:\n" + answersInfo
   GmailApp.sendEmail(recepient, "Результаты теста", body)
   updateForm()
+}
+
+function getTextAboutAnswers(askedWord, answeredWord, pointsForQuestion, maxPointsForQuestion){
+  var result_text = []
+  i_max = askedWord.length
+  for (var i = 0; i<i_max; i++){
+    var newText = "\nВопрос: " + String(askedWord[i]) +
+        ". Полученный ответ: " + String(answeredWord[i]) + 
+        ". Баллов: " + String(pointsForQuestion[i] + " из " + String(maxPointsForQuestion[i]) + "\n")
+    result_text.push(newText)
+  }
+  return result_text
 }
 
 function castQuizItem_(item, itemType) {
@@ -210,7 +235,7 @@ function fillFormListsByQuestions(gsheetId, sheetName, questionsIndexesArray, fo
                   id = allListItems[q].getId(),
                   values = allAnswers,
                   correctAnswer = correctAnswer,
-                  helpText = "Укажите корректный перевод слова: " + String(wordToTranslate))
+                  helpText = wordToTranslate)
   }
 
 }
